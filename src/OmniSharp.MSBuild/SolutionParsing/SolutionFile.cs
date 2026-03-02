@@ -23,6 +23,15 @@ namespace OmniSharp.MSBuild.SolutionParsing
             GlobalSections = globalSections;
         }
 
+        internal static SolutionFile CreateFromSlnx(ImmutableArray<ProjectBlock> projects)
+        {
+            return new SolutionFile(
+                formatVersion: null,
+                visualStudioVersion: null,
+                projects: projects,
+                globalSections: ImmutableArray<GlobalSectionBlock>.Empty);
+        }
+
         public static SolutionFile Parse(string text)
         {
             if (text == null)

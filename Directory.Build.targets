@@ -14,4 +14,37 @@
       <PackageReference Include="NuGet.Versioning" ExcludeAssets="all" PrivateAssets="all" />
   </ItemGroup>
 
+  <!--
+      Roslyn ExternalAccess libraries (netstandard2.0) define init properties with
+      modreq(IsExternalInit) from Microsoft.CodeAnalysis.Workspaces. When building
+      for net10.0, NuGet resolves the net9.0 Workspaces variant which type-forwards
+      IsExternalInit to System.Runtime. The compiler then emits calls with the wrong
+      modreq, causing MissingMethodException at runtime when netstandard2.0 Workspaces
+      is loaded. Fix: force compile-time references to netstandard2.0 Roslyn so the
+      modreq matches at runtime.
+  -->
+  <ItemGroup Condition="'$(TargetFramework)' == 'net10.0'">
+    <PackageReference Include="Microsoft.CodeAnalysis.Common" ExcludeAssets="Compile" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" ExcludeAssets="Compile" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common" ExcludeAssets="Compile" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" ExcludeAssets="Compile" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Features" ExcludeAssets="Compile" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Features" ExcludeAssets="Compile" />
+    <PackageReference Include="Microsoft.CodeAnalysis.ExternalAccess.OmniSharp" ExcludeAssets="Compile" />
+    <PackageReference Include="Microsoft.CodeAnalysis.ExternalAccess.OmniSharp.CSharp" ExcludeAssets="Compile" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Scripting" ExcludeAssets="Compile" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" ExcludeAssets="Compile" />
+
+    <Reference Include="Microsoft.CodeAnalysis" HintPath="$(NuGetPackageRoot)microsoft.codeanalysis.common\$(RoslynPackageVersion)\lib\netstandard2.0\Microsoft.CodeAnalysis.dll" />
+    <Reference Include="Microsoft.CodeAnalysis.CSharp" HintPath="$(NuGetPackageRoot)microsoft.codeanalysis.csharp\$(RoslynPackageVersion)\lib\netstandard2.0\Microsoft.CodeAnalysis.CSharp.dll" />
+    <Reference Include="Microsoft.CodeAnalysis.Workspaces" HintPath="$(NuGetPackageRoot)microsoft.codeanalysis.workspaces.common\$(RoslynPackageVersion)\lib\netstandard2.0\Microsoft.CodeAnalysis.Workspaces.dll" />
+    <Reference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" HintPath="$(NuGetPackageRoot)microsoft.codeanalysis.csharp.workspaces\$(RoslynPackageVersion)\lib\netstandard2.0\Microsoft.CodeAnalysis.CSharp.Workspaces.dll" />
+    <Reference Include="Microsoft.CodeAnalysis.Features" HintPath="$(NuGetPackageRoot)microsoft.codeanalysis.features\$(RoslynPackageVersion)\lib\netstandard2.0\Microsoft.CodeAnalysis.Features.dll" />
+    <Reference Include="Microsoft.CodeAnalysis.CSharp.Features" HintPath="$(NuGetPackageRoot)microsoft.codeanalysis.csharp.features\$(RoslynPackageVersion)\lib\netstandard2.0\Microsoft.CodeAnalysis.CSharp.Features.dll" />
+    <Reference Include="Microsoft.CodeAnalysis.ExternalAccess.OmniSharp" HintPath="$(NuGetPackageRoot)microsoft.codeanalysis.externalaccess.omnisharp\$(RoslynPackageVersion)\lib\netstandard2.0\Microsoft.CodeAnalysis.ExternalAccess.OmniSharp.dll" />
+    <Reference Include="Microsoft.CodeAnalysis.ExternalAccess.OmniSharp.CSharp" HintPath="$(NuGetPackageRoot)microsoft.codeanalysis.externalaccess.omnisharp.csharp\$(RoslynPackageVersion)\lib\netstandard2.0\Microsoft.CodeAnalysis.ExternalAccess.OmniSharp.CSharp.dll" />
+    <Reference Include="Microsoft.CodeAnalysis.Scripting" HintPath="$(NuGetPackageRoot)microsoft.codeanalysis.scripting.common\$(RoslynPackageVersion)\lib\netstandard2.0\Microsoft.CodeAnalysis.Scripting.dll" />
+    <Reference Include="Microsoft.CodeAnalysis.CSharp.Scripting" HintPath="$(NuGetPackageRoot)microsoft.codeanalysis.csharp.scripting\$(RoslynPackageVersion)\lib\netstandard2.0\Microsoft.CodeAnalysis.CSharp.Scripting.dll" />
+  </ItemGroup>
+
 </Project>

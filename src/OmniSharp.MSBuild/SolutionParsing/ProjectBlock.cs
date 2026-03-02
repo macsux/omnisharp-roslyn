@@ -47,6 +47,16 @@ namespace OmniSharp.MSBuild.SolutionParsing
             Sections = sections;
         }
 
+        internal static ProjectBlock Create(string projectName, string relativePath, string projectGuid)
+        {
+            return new ProjectBlock(
+                projectTypeGuid: string.Empty,
+                projectName: projectName,
+                relativePath: relativePath,
+                projectGuid: projectGuid,
+                sections: ImmutableArray<SectionBlock>.Empty);
+        }
+
         public static ProjectBlock Parse(string headerLine, Scanner scanner)
         {
             var match = s_lazyProjectHeader.Value.Match(headerLine);

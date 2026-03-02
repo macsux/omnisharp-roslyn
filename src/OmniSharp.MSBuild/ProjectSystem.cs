@@ -172,7 +172,9 @@ namespace OmniSharp.MSBuild
             }
 
             var solutionFolder = Path.GetDirectoryName(solutionFilePath);
-            var solutionFile = SolutionFile.ParseFile(solutionFilePath);
+            var solutionFile = Path.GetExtension(solutionFilePath).Equals(".slnx", StringComparison.OrdinalIgnoreCase)
+                ? SlnxFile.ParseFile(solutionFilePath)
+                : SolutionFile.ParseFile(solutionFilePath);
             var processedProjects = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             var result = new List<(string, ProjectIdInfo)>();
 
@@ -244,7 +246,8 @@ namespace OmniSharp.MSBuild
             // see https://docs.microsoft.com/en-us/dotnet/api/system.io.directory.getfiles?view=netframework-4.7.2 ('Note' description)
             var solutionsFilePaths = Directory.GetFiles(rootPath, "*.sln").Where(x => Path.GetExtension(x).Equals(".sln", StringComparison.OrdinalIgnoreCase)).ToArray();
             var solutionFiltersFilePaths = Directory.GetFiles(rootPath, "*.slnf").Where(x => Path.GetExtension(x).Equals(".slnf", StringComparison.OrdinalIgnoreCase)).ToArray();
-            var result = SolutionSelector.Pick(solutionsFilePaths.Concat(solutionFiltersFilePaths).ToArray(), rootPath);
+            var slnxFilePaths = Directory.GetFiles(rootPath, "*.slnx").Where(x => Path.GetExtension(x).Equals(".slnx", StringComparison.OrdinalIgnoreCase)).ToArray();
+            var result = SolutionSelector.Pick(solutionsFilePaths.Concat(solutionFiltersFilePaths).Concat(slnxFilePaths).ToArray(), rootPath);
 
             if (result.Message != null)
             {
